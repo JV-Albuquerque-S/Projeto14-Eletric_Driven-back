@@ -4,6 +4,8 @@ import dotenv from 'dotenv';
 
 import db from "./../db.js"
 
+dotenv.config();
+
 export async function singUp(req, res) {
     const user = req.body;
     try {
