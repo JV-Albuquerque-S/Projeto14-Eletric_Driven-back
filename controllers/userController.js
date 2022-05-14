@@ -3,6 +3,7 @@ import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 
 import db from "./../db.js"
+import { ObjectId } from 'mongodb';
 
 dotenv.config();
 
@@ -16,7 +17,7 @@ export async function singUp(req, res) {
                 email: user.email,
                 password: bcrypt.hashSync(user.password, 10),
                 phone: user.phone,
-                cart: []
+                cart: [1,2,3,4,5,6]  ///TODO: alterar para []
 
             });
             console.log("usuario cadastrado");
@@ -34,7 +35,7 @@ export async function login(req, res) {
     const login = req.body;
     
     try {
-        const user = await db.collection("users").findOne({email: login.email }); 
+        const user = await db.collection("users").findOne({ email: login.email }); 
         if (user && bcrypt.compareSync(login.password, user.password)){
             const data = { email: login.email };
             const secretKey = process.env.JWT_KEY;
@@ -50,5 +51,30 @@ export async function login(req, res) {
     } catch (error){
         console.error(error);
         res.sendStatus(500);
+    }
+}
+
+export async function getUserCart(req, res){
+    const { authorization } = req.headers;
+    const token = authorization?.replace("Bearer ", "").trim();
+    const secretKey = process.env.JWT_KEY;
+
+    try {
+        const tokenData = jwt.verify(token, secretKey);
+
+        const session = await db.collection("sessions").findOne({ token });
+        if (!session) {
+            return res.sendStatus(401);
+        }
+
+        try {
+            const user = await db.collection("users").findOne({ email: tokenData.email });;
+            res.status(200).send(user.cart);
+        } catch (error){
+            console.error(error);
+            res.sendStatus(500);
+        }
+    } catch {
+        return res.sendStatus(401);
     }
 }
