@@ -1,14 +1,14 @@
 import { Router } from "express";
 
-import { singUp } from "../controllers/userController.js";
-// import { singUp, login } from "./../controllers/userController.js";
+import { singUp, login } from "../controllers/userController.js";
+
 // import { singupValidation } from "../middlewares/singupValidationSchema.js";
 // import { loginValidation } from "../middlewares/loginValidationSchema.js";
 
-const userRouter = Router();
+const userRouter = Router(); //TODO: VAKIDATION SCHEMAS 
 
 userRouter.post("/sign-up", singUp);
-// userRouter.post("/sign-up", singupValidation, singUp); 
-// userRouter.post("/login",loginValidation, login);
+userRouter.post("/login", login);
+
 
 export default userRouter;
