@@ -3,8 +3,6 @@ import { Router } from "express";
 import { singUp, login } from "../controllers/userController.js";
 import { singupValidation } from "../middlewares/signupValidation.js";
 import { loginValidation } from "../middlewares/loginValidation.js";
-// import { singupValidation } from "../middlewares/singupValidationSchema.js";
-// import { loginValidation } from "../middlewares/loginValidationSchema.js";
 
 const userRouter = Router(); 
 
