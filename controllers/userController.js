@@ -3,7 +3,6 @@ import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 
 import db from "./../db.js"
-import { ObjectId } from 'mongodb';
 
 dotenv.config();
 
@@ -17,7 +16,7 @@ export async function singUp(req, res) {
                 email: user.email,
                 password: bcrypt.hashSync(user.password, 10),
                 phone: user.phone,
-                cart: [1,2,3,4,5,6]  ///TODO: alterar para []
+                cart: [] 
 
             });
             console.log("usuario cadastrado");
