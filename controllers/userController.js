@@ -77,3 +77,58 @@ export async function getUserCart(req, res){
         return res.sendStatus(401);
     }
 }
+
+export async function getUser(req, res){
+    const { authorization } = req.headers;
+    const token = authorization?.replace("Bearer ", "").trim();
+    const secretKey = process.env.JWT_KEY;
+
+    try {
+        const tokenData = jwt.verify(token, secretKey);
+
+        const session = await db.collection("sessions").findOne({ token });
+        if (!session) {
+            return res.sendStatus(401);
+        }
+
+        try {
+            const user = await db.collection("users").findOne({ email: tokenData.email });
+            if (user){
+                delete user.password;
+                res.send(user);
+            } else {
+                res.sendStatus(401);
+              }
+        } catch (error){
+            console.error(error);
+            res.sendStatus(500);
+        }
+    } catch {
+        return res.sendStatus(401);
+    }
+}
+
+export async function deleteUser(req, res){
+    const { authorization } = req.headers;
+    const token = authorization?.replace("Bearer ", "").trim();
+    const secretKey = process.env.JWT_KEY;
+
+    try {
+        const tokenData = jwt.verify(token, secretKey);
+
+        const session = await db.collection("sessions").findOne({ token });
+        if (!session) {
+            return res.sendStatus(401);
+        }
+
+        try {
+            await db.collection("users").deleteOne({ email: tokenData.email });
+            res.sendStatus(200);
+        } catch (error){
+            console.error(error);
+            res.sendStatus(500);
+        }
+    } catch {
+        return res.sendStatus(401);
+    }
+}
